@@ -510,7 +510,7 @@ export class BarGraph {
       ----------------
       inputAxes (type: array)
         - An array with two d3.axis generator functions.
-        - The first is the category axis. The second as the numerical axis
+        - The first is the categorical axis. The second as the numerical axis
       */
       
       this.#axisGens = {c: inputAxes[0], n: inputAxes[1]};
@@ -541,7 +541,7 @@ export class BarGraph {
       /*
       Parameters 
       ----------------
-      inputXScale (type: function)
+      inputCScale (type: function)
         - A d3.scale function that will be used to space the labels and 
           categorical position of bars.
       */
@@ -1093,7 +1093,14 @@ export class BarGraph {
     }
     
     dataMinMax() {
-      /* gets men and max values in dataset */
+      /* 
+      Gets min and max values in dataset 
+      
+      Parameters
+      --------------------
+      undefined, but relies on #grouped, #stackData, and #nSeries. 
+      Please initialise these values before calling this method.
+      */
       
       let min, max;
       

@@ -1,3 +1,9 @@
+## Public Fields
+None
+
+&nbsp;
+
+
 ## Public Methods
 
 -----
@@ -137,14 +143,206 @@ None
 
 ------
 
+`dataMinMax()`
+
+**Description**
+
+- Gets min and max values across numerical series of the datasets.
+- This is useful when initialising the numerical scale function.
+- Still, you will not normally need to call this function.
+
+**Parameters**
+
+None, but this method relies on #grouped, #stackData, and #nSeries. 
+Please initialise these values before calling this method.
+
+**Returns** 
+
+Array 
+- has two elements: the minimum and maximum numerical values.
+
+------
+
+&nbsp;
+
+&nbsp;
+
 ## Private Fields
-Also, the following fields are useful to adjust: 
-- data/cSeries/nSeries - raw data as an array of objects and the keys showing
-  the categorical/numerical data field of objects
-- graphTitle/cAxisTitle/nAxisTitle - the titles to display on top of the graph
-  and on each axis
-- vertical - whether to have vertical bars or horizontal
-- grouped - whether to have side-by-side bars in groups or to stack the bars
-- container - an SVG element to render the bar graph in
-- wrapper - a div element containing the SVG element
-- width/height/margins - controls the size of the bar graph
+Graph 'Settings': 
+
+`#container` (D3 selection):
+- An SVG element to render the bar graph in. 
+- Ensure you send a D3 selection of a DOM element, not a DOM element itself.
+- Warning: **the value you set to this field is not validated. Any bugs due to incorrect values are your responsibility.**
+
+`#wrapper` (D3 selection):
+- A div element that contains the SVG element.
+- This is separate from `#container` since it is needed to house tooltips. 
+- Warning: **the value you set to this field is not validated. Any bugs due to incorrect values are your responsibility.**
+
+`#width`/`#height` (numbers):
+- Control the size of the bar graph.
+
+`#margins` (array of numbers):
+- The top, right, bottom, and left margins of the bar graph.
+
+`#graphTitle`/`#cAxisTitle`/`#nAxisTitle` (strings):
+- The titles to display on top of the graph and on the categorical and numerical axes.
+
+`#data` (array of objects): 
+- Each object corresponds to one datapoint with multiple key value pairs. 
+- As the name suggests, that the values you intend to show on the numerical axis must be numbers. Ensure this is true before passing data to the class. 
+
+`#cSeries`/`#nSeries`/`#tooltipSeries` (array of strings): 
+- The key(s) of `#data`'s objects specifying data to be shown in the categorical/numerical axis or tooltips. 
+- The categorical series must be an array of exactly one string (can't have multiple data fields shown on the categorical axis).
+- The numerical series can be an array with one or more strings. Multiple strings mean multiple data fields will be shown as stacked bar graphs or grouped bar graphs. 
+- The tooltip series can be an array with one or more strings. Multiple strings will cause multiple values to be shown when hovering over bars.
+
+`#barLabels` (boolean, default true):
+- Whether to have value labels shown next to bars. 
+
+`#tooltips` (boolean, default true):
+- Whether to display tooltips on hover. 
+
+`#vertical` (boolean, default false):
+- Whether to have vertical bars (compared to horizontal)
+
+`#grouped` (boolean, default false):
+- Whether to have side-by-side bars in groups if multiple keys are specified in `#nSeries`. (Compared to stacking the bars)
+
+`#barWidth` (number):
+- The width of each bar graphed. 
+
+`#padding` (number):
+- A number between 0 and 1, representing a decimal percentage. 
+- This is the percentage of each bar's width that will be padded white space.
+
+`#legendRadius` (number, default 12): 
+- The radius of circles in the legend. 
+
+&nbsp;
+
+Customisable D3.js Functions:
+Warning: **the values you set to these fields are not validated. Any bugs due to incorrect values are your responsibility.**
+
+`#axisGens` (array):
+- This array must have exactly two D3.js axis generator functions: one for the categorical axis and one for the numerical axis.
+- It all automatically be set by `initAxes()` unless you manually change its value.
+
+`#stackGen` (D3.js stack generator function):
+- This stack generator function will be used to process the row data for stacked bar graphs.
+- It all automatically be set by `initStack()` unless you manually change its value.
+
+`#stackData` (array):
+- This is the processed data used to generate stacked bar graphs.
+- It will automatically be initialised to the return value of a D3.js stack generator function. Unless you are familiar with the specification of this function's return, it is highly recommended you do not change this value.
+
+`#cScale` (D3.js scale function):
+- This is used to position axis labels and bars along the categorical axis.
+- It all automatically be set by `initCScale()` to a `d3.bandScale()` unless you manually change its value.
+
+`#nScale` (D3.js scale function):
+- This is used to position axis labels and bars along the numerical axis.
+- It all automatically be set by `initNScale()` unless you manually change its value.
+
+
+&nbsp;
+
+&nbsp;
+
+## Private Methods
+
+These helper methods are used internally by public methods. This documentation is included in case you need to fix bugs in these private methods.
+
+------
+
+`#renderAxes()`
+
+**Description**
+
+- Displays axes for the bar graph.
+- Internally called by `render()`.
+- **May have bugs in the height of the axis.**
+
+**Parameters**
+
+None, but relies on nearly all fields.
+
+**Returns** 
+None
+
+------
+
+`#renderTitles()`
+
+**Description**
+
+- Displays axis and bar graph titles.
+- Internally called by `render()`.
+- **May have bugs in the height of the bar graph title.**
+
+**Parameters**
+
+None, but relies on nearly all fields.
+
+**Returns** 
+None
+
+------
+
+`#renderLegends()`
+
+**Description**
+
+- Displays legend labels.
+- Internally called by `render()`.
+- **The legend positioning often must be adjusted by different users.**
+- Ie. you'll likely need to modify this method.
+
+**Parameters**
+
+None, but relies on nearly all fields.
+
+**Returns** 
+None
+
+------
+
+`#renderTooltips()`
+
+**Description**
+
+- Adds a tooltip box to the graph's wrapper and returns event handlers needed to control it.
+- Internally called by `render()`.
+- Bugs are not too likely, but mobile responsiveness will likely require adjustments.
+
+**Parameters**
+
+None, but relies on nearly all fields.
+
+**Returns** 
+Array
+- Three functions that handle the following events:
+onMouseEnter, onMouseLeave, and onMouseMove.
+- These event handlers are added to the graph's bars in `#renderBars()`.
+
+------
+
+`#renderBars(tooltipEnter, tooltipLeave, tooltipMove)`
+
+**Description**
+
+- Displays bars for the bar graph.
+- Internally called by `render()`.
+- **May have bugs in the positioning of bar labels.**
+
+**Parameters**
+
+- `tooltipEnter (type: function)`: an event handler function for the tooltip behaviour the mouse enters a bar. This function is returned from `#renderTooltips()`.
+- `tooltipLeave (type: function)`: an event handler function for the tooltip behaviour when the mouse leaves a bar. This function is returned from `#renderTooltips()`.
+- `tooltipMove (type: function)`: an event handler function for the tooltip behaviour when the mouse moves inside a bar. This function is returned from `#renderTooltips()`.1
+- Also, relies on nearly all fields. 
+
+**Returns** 
+None

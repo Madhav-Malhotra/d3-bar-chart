@@ -15,7 +15,7 @@ First, create an `index.html` file and `main.js` file in some directory.
 
 Here's an example:
 
-```
+```html
 (index.html)
 --------------------
 <!DOCTYPE html>
@@ -41,7 +41,7 @@ Next, download the `bar.js` file in the `/dist` folder of this repository.
 Add it to the same directory as `index.html` and `main.js`. 
 
 Also, add a CSV data file to that directory. Here is an example file:
-```
+```csv
 (data.csv)
 --------------------
 day,apricots,blueberries,cherries
@@ -54,7 +54,7 @@ Friday,105,205,180
 
 Next, put the following code in `main.js` to initialise the graph.
 
-```
+```js
 (main.js)
 ---------------------
 import { BarGraph } from "./bar.js";
@@ -83,7 +83,7 @@ Now, append some more code to `main.js` to load the data you want and display th
 Note: the **ySeries variables must be numbers**.
 You'll probably process your data with a callback function as an argument to `d3.csv()` to achieve this.
 
-```
+```js
 (main.js)
 ---------------------
 // Load data
@@ -126,7 +126,7 @@ The following CSS selectors might be useful:
   will likely want to change its size, background colour, etc. 
 
 For example, create a `main.css` file in your main directory and add the following CSS:
-```
+```css
 (main.css)
 --------------------
 /* Graph background */
